@@ -1,3 +1,8 @@
+### dev-master
+
+* PHP 8.1+
+* Dev: refactoring structure
+
 ### 1.0.1 (08.12.2015)
 
 * #5: Fixed tests for Windows line break

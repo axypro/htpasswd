@@ -1,17 +1,17 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests\io;
 
+use axy\htpasswd\errors\FileNotSpecified;
 use axy\htpasswd\io\Real;
+use axy\htpasswd\tests\BaseTestCase;
 
 /**
  * coversDefaultClass axy\htpasswd\io\Real
  */
-class RealTest extends \PHPUnit_Framework_TestCase
+class RealTest extends BaseTestCase
 {
     /**
      * covers ::load
@@ -19,14 +19,11 @@ class RealTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadSave()
     {
-        $fn = __DIR__.'/../tmp/real.txt';
-        $content = 'This is content of the file'.PHP_EOL;
-        if (is_file($fn)) {
-            unlink($fn);
-        }
+        $fn = $this->tmpDir()->getPath('real.txt', clear: true);
+        $content = 'This is content of the file' . PHP_EOL;
         $real = new Real($fn);
         $this->assertSame('', $real->load());
-        $this->assertFileNotExists($fn);
+        $this->assertFileDoesNotExist($fn);
         $real->save($content);
         $this->assertFileExists($fn);
         $this->assertSame($content, file_get_contents($fn));
@@ -43,7 +40,7 @@ class RealTest extends \PHPUnit_Framework_TestCase
     {
         $real = new Real(null);
         $this->assertSame('', $real->load());
-        $this->setExpectedException('axy\htpasswd\errors\FileNotSpecified');
+        $this->expectException(FileNotSpecified::class);
         $real->save('Content');
     }
 
@@ -53,7 +50,7 @@ class RealTest extends \PHPUnit_Framework_TestCase
     public function testSetFilename()
     {
         $real = new Real(null);
-        $fn = __DIR__.'/../tst/invalid';
+        $fn = __DIR__ . '/../tst/invalid';
         $real->setFileName($fn);
         $this->assertSame(file_get_contents($fn), $real->load());
     }

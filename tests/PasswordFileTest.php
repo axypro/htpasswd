@@ -1,11 +1,11 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests;
 
+use axy\htpasswd\errors\FileNotSpecified;
+use axy\htpasswd\errors\InvalidFileFormat;
 use axy\htpasswd\PasswordFile;
 use axy\htpasswd\io\Test;
 use axy\crypt\BCrypt;
@@ -13,7 +13,7 @@ use axy\crypt\BCrypt;
 /**
  * coversDefaultClass axy\htpasswd\PasswordFile
  */
-class PasswordFileTest extends \PHPUnit_Framework_TestCase
+class PasswordFileTest extends BaseTestCase
 {
     /**
      * covers ::getFileName
@@ -59,7 +59,7 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testRealVerify()
     {
-        $file = new PasswordFile(__DIR__.'/tst/test');
+        $file = new PasswordFile(__DIR__ . '/tst/test');
         $this->assertTrue($file->isUserExist('one'));
         $this->assertTrue($file->isUserExist('two'));
         $this->assertFalse($file->isUserExist('three'));
@@ -75,14 +75,11 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testRealSave()
     {
-        $fn = __DIR__.'/tmp/test';
-        if (is_file($fn)) {
-            unlink($fn);
-        }
+        $fn = $this->tmpDir()->getPath('test', clear: true);
         $file = new PasswordFile($fn);
         $file->setPassword('one', 'three');
         $file->setPassword('two', 'four');
-        $this->assertFileNotExists($fn);
+        $this->assertFileDoesNotExist($fn);
         $file->save();
         $this->assertFileExists($fn);
         $file2 = new PasswordFile($fn);
@@ -96,22 +93,22 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * covers ::load
-     * @expectedException \axy\htpasswd\errors\InvalidFileFormat
      */
     public function testInvalid()
     {
-        $file = new PasswordFile(__DIR__.'/tst/invalid');
+        $file = new PasswordFile(__DIR__ . '/tst/invalid');
+        $this->expectException(InvalidFileFormat::class);
         $file->isUserExist('one');
     }
 
     /**
      * covers ::load
-     * @expectedException \axy\htpasswd\errors\InvalidFileFormat
      */
     public function testInvalidMock()
     {
         $mock = new Test('invalid');
         $file = new PasswordFile($mock);
+        $this->expectException(InvalidFileFormat::class);
         $file->isUserExist('one');
     }
 
@@ -121,11 +118,8 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemove()
     {
-        $fnSource = __DIR__.'/tst/test';
-        $fn = __DIR__.'/tmp/test';
-        if (is_file($fn)) {
-            unlink($fn);
-        }
+        $fnSource = __DIR__ . '/tst/test';
+        $fn = $this->tmpDir()->getPath('test', clear: true);
         $file = new PasswordFile($fnSource);
         $file->setFileName($fn);
         $this->assertFalse($file->remove('none'));
@@ -144,10 +138,10 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
         $file = new PasswordFile();
         $this->assertNull($file->getFileName());
         $file->setPassword('nick', 'pass', PasswordFile::ALG_PLAIN);
-        $this->assertSame('nick:pass'.PHP_EOL, $file->getContent());
+        $this->assertSame('nick:pass' . PHP_EOL, $file->getContent());
         $this->assertTrue($file->isUserExist('nick'));
         $this->assertFalse($file->isUserExist('pass'));
-        $this->setExpectedException('axy\htpasswd\errors\FileNotSpecified');
+        $this->expectException(FileNotSpecified::class);
         $file->save();
     }
 
@@ -156,7 +150,7 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
         $file = new PasswordFile();
         $file->setPassword('nick', 'pass', PasswordFile::ALG_BCRYPT, ['cost' => 6]);
         $content = trim($file->getContent());
-        $pattern = '~^nick\:(\$2y\$06\$[A-Za-z0-9/\.]{53})$~is';
+        $pattern = '~^nick:(\$2y\$06\$[A-Za-z0-9/.]{53})$~is';
         $this->assertTrue((bool)preg_match($pattern, $content, $matches));
         $hash = $matches[1];
         $this->assertTrue(BCrypt::verify('pass', $hash));
@@ -169,5 +163,6 @@ class PasswordFileTest extends \PHPUnit_Framework_TestCase
     {
         $file = new PasswordFile(null);
         $file->getContent();
+        $this->assertTrue(true, 'not thrown');
     }
 }

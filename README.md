@@ -3,19 +3,12 @@
 Working with htpasswd file (PHP).
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/axy/htpasswd.svg?style=flat-square)](https://packagist.org/packages/axy/htpasswd)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.4-8892BF.svg?style=flat-square)](https://php.net/)
-[![Build Status](https://img.shields.io/travis/axypro/htpasswd/master.svg?style=flat-square)](https://travis-ci.org/axypro/htpasswd)
-[![Coverage Status](https://coveralls.io/repos/axypro/htpasswd/badge.svg?branch=master&service=github)](https://coveralls.io/github/axypro/htpasswd?branch=master)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg?style=flat-square)](https://php.net/)
+[![Tests](https://github.com/axypro/htpasswd/actions/workflows/test.yml/badge.svg)](https://github.com/axypro/htpasswd/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/axypro/htpasswd/badge.svg?branch=master)](https://coveralls.io/github/axypro/htpasswd?branch=master)
 [![License](https://poser.pugx.org/axy/htpasswd/license)](LICENSE)
 
-* The library does not require any dependencies (except composer packages).
-* Tested on PHP 5.4+, PHP 7, HHVM (on Linux), PHP 5.5 (on Windows).
-* Install: `composer require axy/htpasswd`.
-* License: [MIT](LICENSE).
-
 ### Documentation
-
-[Documentation in Russian](https://github.com/axypro/htpasswd/wiki).
 
 The library provides program API for manipulation with htpasswd file
 (for console utility see [axypro/htpasswd-cli](https://github.com/axypro/htpasswd-cli)).
@@ -44,7 +37,6 @@ The constructor takes the name of a htpasswd file.
 Or `NULL`: analogue of the option `-n` of the console utility:
 
 ```php
-
 $file = new PasswordFile();
 $file->setPassword('nick', 'password');
 $file->getContent(); // out of the "file" content
@@ -58,7 +50,7 @@ Sets the password `$password` for a user `$user`.
 For hashing uses `$algorithm` (by default Apache MD5).
 
 `$options` is an array of options for hashing.
-Only `cost` for BCrypt (integer of from 4 to 31)
+Only `cost` for BCrypt supported (integer in the range 4 to 31)
 
 Returns `TRUE` if a new user has been created.
 And `FALSE` if has been changed the password of an existing user.
@@ -83,7 +75,7 @@ if (!$file->isUserExist('john')) {
     exit();
 }
 if (!$file->verify('john', 'password')) {
-    echo 'You not John! You an impostor!';
+    echo 'You are not John! You are an impostor!';
     exit();
 }
 echo 'Hello, John';

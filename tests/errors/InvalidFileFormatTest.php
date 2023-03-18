@@ -1,17 +1,16 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests\errors;
 
 use axy\htpasswd\errors\InvalidFileFormat;
+use axy\htpasswd\tests\BaseTestCase;
 
 /**
  * coversDefaultClass axy\htpasswd\errors\InvalidFileFormat
  */
-class InvalidFileFormatTest extends \PHPUnit_Framework_TestCase
+class InvalidFileFormatTest extends BaseTestCase
 {
     /**
      * covers ::getFileName

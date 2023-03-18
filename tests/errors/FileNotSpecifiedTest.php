@@ -1,17 +1,16 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests\errors;
 
 use axy\htpasswd\errors\FileNotSpecified;
+use axy\htpasswd\tests\BaseTestCase;
 
 /**
  * coversDefaultClass axy\htpasswd\errors\FileNotSpecified
  */
-class FileNotSpecifiedTest extends \PHPUnit_Framework_TestCase
+class FileNotSpecifiedTest extends BaseTestCase
 {
     /**
      * covers ::getFileName

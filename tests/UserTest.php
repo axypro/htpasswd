@@ -1,8 +1,6 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests;
 
@@ -12,24 +10,24 @@ use axy\htpasswd\PasswordFile;
 /**
  * coversDefaultClass axy\htpasswd\User
  */
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends BaseTestCase
 {
     /**
      * covers ::getFileLine
      * covers ::getName
      */
-    public function testGetFileLine()
+    public function testGetFileLine(): void
     {
         $user = new User('nick', 'qq0e00d');
         $this->assertSame('nick:qq0e00d', $user->getFileLine());
         $this->assertSame('nick:qq0e00d', (string)$user);
-        $this->assertSame('nick', $user->getName());
+        $this->assertSame('nick', $user->name);
     }
 
     /**
      * covers ::verify
      */
-    public function testVerify()
+    public function testVerify(): void
     {
         $user = new User('nick', '$apr1$aGwevNmX$4WQ0UxE4TzhoaE6QkeBJJ0');
         $this->assertTrue($user->verify('password'));
@@ -39,7 +37,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::setPassword
      */
-    public function testSetPassword()
+    public function testSetPassword(): void
     {
         $user = new User('nick', '$apr1$aGwevNmX$4WQ0UxE4TzhoaE6QkeBJJ0');
         $user->setPassword('another', PasswordFile::ALG_SHA1);
@@ -51,10 +49,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::loadFromFileLine
      * @dataProvider providerLoadFromFileLine
-     * @param string $line
-     * @param bool $success
      */
-    public function testLoadFromFileLine($line, $success)
+    public function testLoadFromFileLine(string $line, bool $success): void
     {
         if ($success) {
             $user = User::loadFromFileLine($line);
@@ -65,10 +61,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function providerLoadFromFileLine()
+    public static function providerLoadFromFileLine(): array
     {
         return [
             ['nick:$apr1$aGwevNmX$4WQ0UxE4TzhoaE6QkeBJJ0', true],

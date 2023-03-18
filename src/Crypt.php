@@ -1,29 +1,21 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd;
 
 use axy\crypt\APR1;
 use axy\crypt\BCrypt;
 
-/**
- * Hash/verify password
- */
+/** Hashes and verifies passwords */
 class Crypt
 {
-    /**
-     * Hash a password
-     *
-     * @param string $password
-     * @param string $algorithm [optional]
-     * @param array $options [optional]
-     * @return string
-     */
-    public static function hash($password, $algorithm = PasswordFile::ALG_MD5, array $options = null)
-    {
+    /** Hashes a password */
+    public static function hash(
+        string $password,
+        string $algorithm = PasswordFile::ALG_MD5,
+        array $options = null,
+    ): ?string {
         if ($options === null) {
             $options = [];
         }
@@ -43,14 +35,8 @@ class Crypt
         return null;
     }
 
-    /**
-     * Checks if a password matches a hash
-     *
-     * @param string $password
-     * @param string $hash
-     * @return bool
-     */
-    public static function verify($password, $hash)
+    /** Checks if a password matches a hash */
+    public static function verify(string $password, string $hash): bool
     {
         if ($password === $hash) {
             return true;
@@ -64,7 +50,7 @@ class Crypt
         if (self::cryptVerify($password, $hash)) {
             return true;
         }
-        if (substr($hash, 0, 2) === '$2') {
+        if (str_starts_with($hash, '$2')) {
             if (BCrypt::verify($password, $hash)) {
                 return true;
             }
@@ -72,25 +58,14 @@ class Crypt
         return false;
     }
 
-    /**
-     * Hash by SHA-1 (Apache version)
-     *
-     * @param string $password
-     * @return string
-     */
-    public static function sha1($password)
+    /** Hashes by SHA-1 (Apache version) */
+    public static function sha1(string $password): string
     {
-        return '{SHA}'.base64_encode(sha1($password, true));
+        return '{SHA}' . base64_encode(sha1($password, true));
     }
 
-    /**
-     * Verifies a hash of CRYPT algorithm
-     *
-     * @param string $password
-     * @param string $hash
-     * @return bool
-     */
-    public static function cryptVerify($password, $hash)
+    /** Verifies a hash of CRYPT algorithm */
+    public static function cryptVerify(string $password, string $hash): bool
     {
         $salt = substr($hash, 0, 2);
         try {
@@ -102,13 +77,8 @@ class Crypt
         return ($actual === $hash);
     }
 
-    /**
-     * Hash a password using CRYPT algorithm
-     *
-     * @param string $password
-     * @return string
-     */
-    public static function cryptHash($password)
+    /** Hashes a password using CRYPT algorithm */
+    public static function cryptHash(string $password): string
     {
         $salt = substr(base64_encode(chr(mt_rand(0, 255))), 0, 2);
         $salt = str_replace('+', '.', $salt);

@@ -1,8 +1,6 @@
 <?php
-/**
- * @package axy\htpasswd
- * @author Oleg Grigoriev <go.vasac@gmail.com>
- */
+
+declare(strict_types=1);
 
 namespace axy\htpasswd\tests;
 
@@ -15,12 +13,12 @@ use axy\crypt\BCrypt;
  * coversDefaultClass axy\htpasswd\Crypt
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class CryptTest extends \PHPUnit_Framework_TestCase
+class CryptTest extends BaseTestCase
 {
     /**
      * covers ::hash
      */
-    public function testHashMD5()
+    public function testHashMD5(): void
     {
         $hash = Crypt::hash('my-password', PasswordFile::ALG_MD5);
         $this->assertTrue(APR1::verify('my-password', $hash));
@@ -31,7 +29,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::hash
      */
-    public function testHashPlain()
+    public function testHashPlain(): void
     {
         $this->assertSame('my-password', Crypt::hash('my-password', PasswordFile::ALG_PLAIN));
     }
@@ -39,7 +37,7 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::hash
      */
-    public function testHashSha1()
+    public function testHashSha1(): void
     {
         $password = 'my-password';
         $sha1 = '{SHA}7b1eEZ+UutufmaZ6xv9MelIErWE=';
@@ -49,12 +47,12 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::hash
      */
-    public function testHashCrypt()
+    public function testHashCrypt(): void
     {
         $password = '123456';
         $hash = Crypt::hash($password, PasswordFile::ALG_CRYPT);
-        $this->assertInternalType('string', $hash);
-        $pattern = '~^([a-zA-Z0-9/\.]{2})[a-zA-Z0-9/\.]{11}$~s';
+        $this->assertIsString($hash);
+        $pattern = '~^([a-zA-Z0-9/.]{2})[a-zA-Z0-9/.]{11}$~s';
         if (!preg_match($pattern, $hash, $matches)) {
             $this->fail('Crypt pattern');
         }
@@ -64,31 +62,31 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::hash
      */
-    public function testHashBCrypt()
+    public function testHashBCrypt(): void
     {
         $password = 'mypassword=123456';
         $hash = Crypt::hash($password, PasswordFile::ALG_BCRYPT);
-        $this->assertInternalType('string', $hash);
-        $this->assertTrue((bool)preg_match('~^\$2y\$05\$[A-Za-z0-9/\.]{53}$~is', $hash));
+        $this->assertIsString($hash);
+        $this->assertMatchesRegularExpression('~^\$2y\$05\$[A-Za-z0-9/.]{53}$~is', $hash);
         $this->assertTrue(BCrypt::verify($password, $hash));
     }
 
     /**
      * covers ::hash
      */
-    public function testHashBCryptCost()
+    public function testHashBCryptCost(): void
     {
         $password = 'mypassword=123456';
         $hash = Crypt::hash($password, PasswordFile::ALG_BCRYPT, ['cost' => 7]);
-        $this->assertInternalType('string', $hash);
-        $this->assertTrue((bool)preg_match('~^\$2y\$07\$[A-Za-z0-9/\.]{53}$~is', $hash));
+        $this->assertIsString($hash);
+        $this->assertMatchesRegularExpression('~^\$2y\$07\$[A-Za-z0-9/.]{53}$~is', $hash);
         $this->assertTrue(BCrypt::verify($password, $hash));
     }
 
     /**
      * covers ::hash
      */
-    public function testHashUndefined()
+    public function testHashUndefined(): void
     {
         $this->assertNull(Crypt::hash('password', 'undefined'));
     }
@@ -96,19 +94,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::verify
      * @dataProvider providerVerify
-     * @param string $password
-     * @param string $hash
-     * @param bool $expected [optional]
      */
-    public function testVerify($password, $hash, $expected = true)
+    public function testVerify(string $password, string $hash, bool $expected = true): void
     {
         $this->assertSame($expected, Crypt::verify($password, $hash));
     }
 
-    /**
-     * @return array
-     */
-    public function providerVerify()
+    public static function providerVerify(): array
     {
         return [
             'plain' => ['password', 'password'],
@@ -131,18 +123,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::sha1
      * @dataProvider providerSha1
-     * @param string $password
-     * @param string $expected
      */
-    public function testSha1($password, $expected)
+    public function testSha1(string $password, string $expected): void
     {
         $this->assertSame($expected, Crypt::sha1($password));
     }
 
-    /**
-     * @return array
-     */
-    public function providerSha1()
+    public static function providerSha1(): array
     {
         return [
             ['password', '{SHA}W6ph5Mm5Pz8GgiULbPgzG37mj9g='],
@@ -153,19 +140,13 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::cryptVerify
      * @dataProvider providerCryptVerify
-     * @param string $password
-     * @param string $hash
-     * @param bool $expected [optional]
      */
-    public function testCryptVerify($password, $hash, $expected = true)
+    public function testCryptVerify(string $password, string $hash, bool $expected = true): void
     {
         $this->assertSame($expected, Crypt::cryptVerify($password, $hash));
     }
 
-    /**
-     * @return array
-     */
-    public function providerCryptVerify()
+    public static function providerCryptVerify(): array
     {
         return [
             ['password', 'rOVL0k/supDAY'],
@@ -181,19 +162,15 @@ class CryptTest extends \PHPUnit_Framework_TestCase
     /**
      * covers ::cryptHash
      * @dataProvider providerCryptHash
-     * @param string $password
      */
-    public function testCryptHash($password)
+    public function testCryptHash(string $password): void
     {
         $hash = Crypt::cryptHash($password);
-        $this->assertInternalType('string', $hash);
+        $this->assertIsString($hash);
         $this->assertTrue(Crypt::cryptVerify($password, $hash));
     }
 
-    /**
-     * @return array
-     */
-    public function providerCryptHash()
+    public static function providerCryptHash(): array
     {
         return [
             ['password'],
