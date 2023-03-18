@@ -19,7 +19,7 @@ class RealTest extends BaseTestCase
      */
     public function testLoadSave()
     {
-        $fn = $this->tmpDir()->getPath('real.txt', clear: true);
+        $fn = $this->tmpDir()->getPath('real.txt', make: true, clear: true);
         $content = 'This is content of the file' . PHP_EOL;
         $real = new Real($fn);
         $this->assertSame('', $real->load());

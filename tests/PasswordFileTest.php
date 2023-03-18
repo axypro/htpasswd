@@ -75,7 +75,7 @@ class PasswordFileTest extends BaseTestCase
      */
     public function testRealSave()
     {
-        $fn = $this->tmpDir()->getPath('test', clear: true);
+        $fn = $this->tmpDir()->getPath('test', make: true, clear: true);
         $file = new PasswordFile($fn);
         $file->setPassword('one', 'three');
         $file->setPassword('two', 'four');
@@ -119,7 +119,7 @@ class PasswordFileTest extends BaseTestCase
     public function testRemove()
     {
         $fnSource = __DIR__ . '/tst/test';
-        $fn = $this->tmpDir()->getPath('test', clear: true);
+        $fn = $this->tmpDir()->getPath('test', make: true, clear: true);
         $file = new PasswordFile($fnSource);
         $file->setFileName($fn);
         $this->assertFalse($file->remove('none'));
