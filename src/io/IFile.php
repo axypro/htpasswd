@@ -4,24 +4,19 @@ declare(strict_types=1);
 
 namespace axy\htpasswd\io;
 
+use axy\htpasswd\errors\FileNotSpecified;
+
 /**
  * The interface of i/o htpasswd "file"
  */
 interface IFile
 {
-    /**
-     * @return string
-     */
-    public function load();
+    public function load(): string;
 
     /**
-     * @param string $content
-     * @throws \axy\htpasswd\errors\FileNotSpecified
+     * @throws FileNotSpecified
      */
-    public function save($content);
+    public function save(string $content): void;
 
-    /**
-     * @param string $filename
-     */
-    public function setFileName($filename);
+    public function setFileName(string $filename): void;
 }

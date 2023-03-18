@@ -11,20 +11,11 @@ use axy\htpasswd\errors\FileNotSpecified;
  */
 class Real implements IFile
 {
-    /**
-     * The constructor
-     *
-     * @param string $filename
-     */
-    public function __construct($filename)
+    public function __construct(private ?string $filename)
     {
-        $this->filename = $filename;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load()
+    public function load(): string
     {
         if (($this->filename === null) || (!is_file($this->filename))) {
             return '';
@@ -32,10 +23,7 @@ class Real implements IFile
         return file_get_contents($this->filename);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save($content)
+    public function save(string $content): void
     {
         if ($this->filename === null) {
             throw new FileNotSpecified();
@@ -43,16 +31,8 @@ class Real implements IFile
         file_put_contents($this->filename, $content);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFileName($filename)
+    public function setFileName(string $filename): void
     {
         $this->filename = $filename;
     }
-
-    /**
-     * @var string
-     */
-    private $filename;
 }

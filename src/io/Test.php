@@ -14,7 +14,7 @@ class Test implements IFile
      *
      * @param string|string[] $content [optional]
      */
-    public function __construct($content = null)
+    public function __construct(string|array|null $content = null)
     {
         if ($content === null) {
             $content = '';
@@ -24,39 +24,25 @@ class Test implements IFile
         $this->content = $content;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load()
+    public function load(): string
     {
         return $this->content;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function save($content)
+    public function save(string $content): void
     {
         $this->content = $content;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setFileName($content)
+    public function setFileName(string $content): void
     {
     }
 
-    /**
-     * Returns the content as an array of lines
-     */
-    public function getLines()
+    /** Returns the content as an array of lines */
+    public function getLines(): array
     {
         return explode("\n", str_replace("\r", '', $this->content));
     }
 
-    /**
-     * @var string
-     */
-    private $content;
+    private string $content;
 }

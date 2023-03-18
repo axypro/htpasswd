@@ -16,12 +16,7 @@ final class InvalidFileFormat extends Runtime implements Error
      */
     protected $defaultMessage = 'Htpasswd file {{ filename }} has invalid format';
 
-    /**
-     * The constructor
-     *
-     * @param string $filename [optional]
-     */
-    public function __construct($filename = null)
+    public function __construct(string $filename = null)
     {
         $this->filename = $filename;
         $message = [
@@ -30,16 +25,10 @@ final class InvalidFileFormat extends Runtime implements Error
         parent::__construct($message);
     }
 
-    /**
-     * @return string
-     */
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @var string
-     */
-    private $filename;
+    private string $filename;
 }

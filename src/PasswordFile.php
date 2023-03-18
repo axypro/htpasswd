@@ -150,7 +150,7 @@ class PasswordFile
         if (!is_string($filename)) {
             $filename = null;
         }
-        throw new InvalidFileFormat($filename);
+        throw new InvalidFileFormat((string)$filename);
     }
 
     private ?string $filename = null;

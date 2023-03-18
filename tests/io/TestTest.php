@@ -16,7 +16,7 @@ class TestTest extends BaseTestCase
      * covers ::load
      * covers ::save
      */
-    public function testLoadSave()
+    public function testLoadSave(): void
     {
         $test = new Test();
         $this->assertSame('', $test->load());
@@ -31,7 +31,7 @@ class TestTest extends BaseTestCase
     /**
      * covers ::load
      */
-    public function testConstructString()
+    public function testConstructString(): void
     {
         $test = new Test("One\nTwo");
         $this->assertSame("One\nTwo", $test->load());
@@ -42,7 +42,7 @@ class TestTest extends BaseTestCase
     /**
      * covers ::load
      */
-    public function testConstructArray()
+    public function testConstructArray(): void
     {
         $test = new Test(['One', 'Two']);
         $this->assertSame("One\nTwo", $test->load());

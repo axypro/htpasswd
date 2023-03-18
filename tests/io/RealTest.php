@@ -17,7 +17,7 @@ class RealTest extends BaseTestCase
      * covers ::load
      * covers ::save
      */
-    public function testLoadSave()
+    public function testLoadSave(): void
     {
         $fn = $this->tmpDir()->getPath('real.txt', make: true, clear: true);
         $content = 'This is content of the file' . PHP_EOL;
@@ -36,7 +36,7 @@ class RealTest extends BaseTestCase
      * covers ::load
      * covers ::save
      */
-    public function testNotSpecified()
+    public function testNotSpecified(): void
     {
         $real = new Real(null);
         $this->assertSame('', $real->load());
@@ -47,7 +47,7 @@ class RealTest extends BaseTestCase
     /**
      * covers ::setFileName
      */
-    public function testSetFilename()
+    public function testSetFilename(): void
     {
         $real = new Real(null);
         $fn = __DIR__ . '/../tst/invalid';

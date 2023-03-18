@@ -18,7 +18,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * covers ::getFileName
      */
-    public function testGetFileName()
+    public function testGetFileName(): void
     {
         $file = new PasswordFile('/tmp/htpasswd');
         $this->assertSame('/tmp/htpasswd', $file->getFileName());
@@ -29,7 +29,7 @@ class PasswordFileTest extends BaseTestCase
      * covers ::save
      * covers ::isUserExists
      */
-    public function testSetPassword()
+    public function testSetPassword(): void
     {
         $io = new Test();
         $file = new PasswordFile($io);
@@ -57,7 +57,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * covers ::verify
      */
-    public function testRealVerify()
+    public function testRealVerify(): void
     {
         $file = new PasswordFile(__DIR__ . '/tst/test');
         $this->assertTrue($file->isUserExist('one'));
@@ -73,7 +73,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * covers ::save
      */
-    public function testRealSave()
+    public function testRealSave(): void
     {
         $fn = $this->tmpDir()->getPath('test', make: true, clear: true);
         $file = new PasswordFile($fn);
@@ -94,7 +94,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * covers ::load
      */
-    public function testInvalid()
+    public function testInvalid(): void
     {
         $file = new PasswordFile(__DIR__ . '/tst/invalid');
         $this->expectException(InvalidFileFormat::class);
@@ -104,7 +104,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * covers ::load
      */
-    public function testInvalidMock()
+    public function testInvalidMock(): void
     {
         $mock = new Test('invalid');
         $file = new PasswordFile($mock);
@@ -116,7 +116,7 @@ class PasswordFileTest extends BaseTestCase
      * covers ::remove
      * covers ::setFileName
      */
-    public function testRemove()
+    public function testRemove(): void
     {
         $fnSource = __DIR__ . '/tst/test';
         $fn = $this->tmpDir()->getPath('test', make: true, clear: true);
@@ -133,7 +133,7 @@ class PasswordFileTest extends BaseTestCase
         $this->assertSame($expected, trim(file_get_contents($fn)));
     }
 
-    public function testFileNotSpecified()
+    public function testFileNotSpecified(): void
     {
         $file = new PasswordFile();
         $this->assertNull($file->getFileName());
@@ -145,7 +145,7 @@ class PasswordFileTest extends BaseTestCase
         $file->save();
     }
 
-    public function testHashOptions()
+    public function testHashOptions(): void
     {
         $file = new PasswordFile();
         $file->setPassword('nick', 'pass', PasswordFile::ALG_BCRYPT, ['cost' => 6]);
@@ -159,7 +159,7 @@ class PasswordFileTest extends BaseTestCase
     /**
      * Bug #3
      */
-    public function testEmptyContent()
+    public function testEmptyContent(): void
     {
         $file = new PasswordFile(null);
         $file->getContent();
